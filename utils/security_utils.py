@@ -1,29 +1,25 @@
 import hashlib
 import hmac
 import secrets
+
+from global_utils import global_init
+global_init()
+
 from exceptions.custom_exceptions import InvalidInputError
+from __validate import __validate_string_input, __validate_integer_input
 
-def validate_string_input(input_value, parameter_name="입력값"):
-    if not isinstance(input_value, str):
-        raise InvalidInputError(f"{parameter_name}은 문자열이어야 합니다. 받은 값: {input_value}")
-
-def validate_integer_input(input_value, parameter_name="입력값"):
-    if not isinstance(input_value, int):
-        raise InvalidInputError(f"{parameter_name}은 정수여야 합니다. 받은 값: {input_value}")
-    if input_value <= 0:
-        raise InvalidInputError(f"{parameter_name}은 양의 정수여야 합니다. 받은 값: {input_value}")
 
 def hash_password(password: str, salt: str = None) -> str:
     """
-    비밀번호를 해시합니다.
+    Hashes a password.
     
-    :param password: 해시할 비밀번호.
-    :param salt: 추가적인 보안성을 위한 솔트 값 (없을 경우 자동 생성).
-    :return: 해시된 비밀번호 (솔트 포함).
+    :param password: The password to hash.
+    :param salt: Optional salt for added security (auto-generated if not provided).
+    :return: The hashed password (including the salt).
     """
-    validate_string_input(password, "비밀번호")
+    __validate_string_input(password, "password")
     if salt is not None:
-        validate_string_input(salt, "솔트")
+        validate_string_input(salt, "salt")
     if salt is None:
         salt = secrets.token_hex(16)
     hash_object = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000)
@@ -31,66 +27,66 @@ def hash_password(password: str, salt: str = None) -> str:
 
 def verify_password(password: str, hashed_password: str) -> bool:
     """
-    주어진 비밀번호가 해시된 비밀번호와 일치하는지 확인합니다.
+    Verifies if the given password matches the hashed password.
     
-    :param password: 확인할 비밀번호.
-    :param hashed_password: 저장된 해시된 비밀번호.
-    :return: 비밀번호가 일치하면 True, 아니면 False.
+    :param password: The password to verify.
+    :param hashed_password: The stored hashed password.
+    :return: True if the password matches, False otherwise.
     """
-    validate_string_input(password, "비밀번호")
-    validate_string_input(hashed_password, "해시된 비밀번호")
+    __validate_string_input(password, "password")
+    __validate_string_input(hashed_password, "hashed password")
     try:
         salt, hashed = hashed_password.split('$')
         return hash_password(password, salt) == hashed_password
     except ValueError:
-        raise InvalidInputError("올바르지 않은 해시된 비밀번호 형식입니다.")
+        raise InvalidInputError("Invalid hashed password format.")
 
 def generate_secure_token(length: int = 32) -> str:
     """
-    안전한 토큰을 생성합니다.
+    Generates a secure token.
     
-    :param length: 생성할 토큰의 길이.
-    :return: 생성된 토큰.
+    :param length: The length of the token to generate.
+    :return: The generated token.
     """
-    validate_integer_input(length, "토큰 길이")
+    __validate_integer_input(length, "token length")
     return secrets.token_hex(length)
 
 def hmac_sign(message: str, key: str) -> str:
     """
-    주어진 메시지를 HMAC 방식으로 서명합니다.
+    Signs a message using HMAC.
     
-    :param message: 서명할 메시지.
-    :param key: HMAC에 사용할 키.
-    :return: 생성된 HMAC 서명.
+    :param message: The message to sign.
+    :param key: The key to use for HMAC.
+    :return: The generated HMAC signature.
     """
-    validate_string_input(message, "메시지")
-    validate_string_input(key, "키")
+    __validate_string_input(message, "message")
+    __validate_string_input(key, "key")
     hmac_obj = hmac.new(key.encode(), message.encode(), hashlib.sha256)
     return hmac_obj.hexdigest()
 
 def verify_hmac(message: str, key: str, signature: str) -> bool:
     """
-    HMAC 서명이 주어진 메시지와 키로부터 생성된 서명과 일치하는지 확인합니다.
+    Verifies if the HMAC signature matches the given message and key.
     
-    :param message: 확인할 메시지.
-    :param key: HMAC에 사용할 키.
-    :param signature: 확인할 서명.
-    :return: 서명이 일치하면 True, 아니면 False.
+    :param message: The message to verify.
+    :param key: The key to use for HMAC.
+    :param signature: The signature to verify.
+    :return: True if the signature matches, False otherwise.
     """
-    validate_string_input(message, "메시지")
-    validate_string_input(key, "키")
-    validate_string_input(signature, "서명")
+    __validate_string_input(message, "message")
+    __validate_string_input(key, "key")
+    __validate_string_input(signature, "signature")
     expected_signature = hmac_sign(message, key)
     return hmac.compare_digest(expected_signature, signature)
 
 def hash_data(data: str) -> str:
     """
-    주어진 데이터를 SHA-256 방식으로 해시합니다.
+    Hashes the given data using SHA-256.
     
-    :param data: 해시할 데이터.
-    :return: 해시된 데이터.
+    :param data: The data to hash.
+    :return: The hashed data.
     """
-    validate_string_input(data, "데이터")
+    __validate_string_input(data, "data")
     return hashlib.sha256(data.encode()).hexdigest()
 
 # Example usage

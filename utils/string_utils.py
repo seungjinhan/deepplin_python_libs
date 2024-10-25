@@ -1,79 +1,79 @@
-from exceptions.custom_exceptions import InvalidInputError
+from global_utils import global_init
+global_init()
 
-def validate_string_input(text):
-    if not isinstance(text, str):
-        raise InvalidInputError(f"입력값은 문자열이어야 합니다. 받은 값: {text}")
+from exceptions.custom_exceptions import InvalidInputError
+from __validate import __validate_string_input
 
 def to_uppercase(text: str) -> str:
     """
-    문자열을 대문자로 변환합니다.
+    Converts a string to uppercase.
     
-    :param text: 변환할 문자열.
-    :return: 대문자로 변환된 문자열.
+    :param text: The string to convert.
+    :return: The string converted to uppercase.
     """
-    validate_string_input(text)
+    __validate_string_input(text,'text')
     return text.upper()
 
 def to_lowercase(text: str) -> str:
     """
-    문자열을 소문자로 변환합니다.
+    Converts a string to lowercase.
     
-    :param text: 변환할 문자열.
-    :return: 소문자로 변환된 문자열.
+    :param text: The string to convert.
+    :return: The string converted to lowercase.
     """
-    validate_string_input(text)
+    __validate_string_input(text,'text')
     return text.lower()
 
 def reverse(text: str) -> str:
     """
-    주어진 문자열을 뒤집습니다.
+    Reverses the given string.
     
-    :param text: 뒤집을 문자열.
-    :return: 뒤집힌 문자열.
+    :param text: The string to reverse.
+    :return: The reversed string.
     """
-    validate_string_input(text)
+    __validate_string_input(text,'text')
     return text[::-1]
 
 def count_occurrences(text: str, sub: str) -> int:
     """
-    문자열에서 특정 하위 문자열이 나타나는 횟수를 셉니다.
+    Counts the occurrences of a substring in a string.
     
-    :param text: 검색할 문자열.
-    :param sub: 검색할 하위 문자열.
-    :return: 하위 문자열이 나타나는 횟수.
+    :param text: The string to search in.
+    :param sub: The substring to search for.
+    :return: The number of occurrences of the substring.
     """
-    validate_string_input(text)
-    validate_string_input(sub)
+    __validate_string_input(text, 'text')
+    __validate_string_input(sub,'sub')
     return text.count(sub)
 
 def remove_whitespace(text: str) -> str:
     """
-    문자열에서 모든 공백 문자를 제거합니다.
+    Removes all whitespace characters from a string.
     
-    :param text: 처리할 문자열.
-    :return: 모든 공백 문자가 제거된 문자열.
+    :param text: The string to process.
+    :return: The string with all whitespace characters removed.
     """
-    validate_string_input(text)
+    __validate_string_input(text,'text')
     return ''.join(text.split())
 
 def capitalize_words(text: str) -> str:
     """
-    문자열의 각 단어의 첫 글자를 대문자로 변환합니다.
+    Capitalizes the first letter of each word in a string.
     
-    :param text: 변환할 문자열.
-    :return: 각 단어의 첫 글자가 대문자로 변환된 문자열.
+    :param text: The string to convert.
+    :return: The string with each word's first letter capitalized.
     """
-    validate_string_input(text)
+    __validate_string_input(text,'text')
     return text.title()
 
 def contains_only_digits(text: str) -> bool:
     """
-    문자열이 숫자로만 이루어져 있는지 확인합니다.
+    Checks if a string contains only digits.
     
-    :param text: 확인할 문자열.
-    :return: 문자열이 숫자로만 이루어져 있으면 True, 아니면 False.
+    :param text: The string to check.
+    :return: True if the string contains only digits, False otherwise.
     """
-    validate_string_input(text)
+    __validate_string_input(text,'text')
     return text.isdigit()
 
 # Example usage
