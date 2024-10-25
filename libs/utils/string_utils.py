@@ -1,8 +1,5 @@
-from global_utils import global_init
-global_init()
-
-from exceptions.custom_exceptions import InvalidInputError
-from __validate import __validate_string_input
+from libs.exceptions.custom_exceptions import InvalidInputError
+from libs.utils.__validate import __validate_string_input
 
 def to_uppercase(text: str) -> str:
     """

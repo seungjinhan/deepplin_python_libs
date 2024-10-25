@@ -2,11 +2,9 @@ import secrets
 import jwt
 from datetime import datetime, timedelta, timezone
 
-from global_utils import global_init
-global_init()
+from libs.exceptions.custom_exceptions import InvalidInputError, AuthenticationError
+from libs.utils.__validate import __validate_string_input, __validate_integer_input
 
-from exceptions.custom_exceptions import InvalidInputError, AuthenticationError
-from __common import __validate_string_input, __validate_integer_input
 
 def generate_jwt(payload: dict, secret: str, expiration_minutes: int = 60, issued_at: datetime = None, expiration: datetime = None) -> str:
     """
@@ -71,6 +69,7 @@ def verify_jwt(token: str, secret: str) -> dict:
         raise AuthenticationError("The JWT signature has expired.")
     except jwt.InvalidTokenError:
         raise AuthenticationError("Invalid JWT.")
+
 
 def generate_csrf_token() -> str:
     """

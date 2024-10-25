@@ -2,11 +2,8 @@ import hashlib
 import hmac
 import secrets
 
-from global_utils import global_init
-global_init()
-
-from exceptions.custom_exceptions import InvalidInputError
-from __validate import __validate_string_input, __validate_integer_input
+from libs.exceptions.custom_exceptions import InvalidInputError
+from libs.utils.__validate import __validate_string_input, __validate_positive_number
 
 
 def hash_password(password: str, salt: str = None) -> str:
@@ -17,9 +14,9 @@ def hash_password(password: str, salt: str = None) -> str:
     :param salt: Optional salt for added security (auto-generated if not provided).
     :return: The hashed password (including the salt).
     """
-    __validate_string_input(password, "password")
+    __validate_string_input(password, "password", is_allow_empty=False)
     if salt is not None:
-        validate_string_input(salt, "salt")
+        __validate_string_input(salt, "salt")
     if salt is None:
         salt = secrets.token_hex(16)
     hash_object = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000)
@@ -48,7 +45,7 @@ def generate_secure_token(length: int = 32) -> str:
     :param length: The length of the token to generate.
     :return: The generated token.
     """
-    __validate_integer_input(length, "token length")
+    __validate_positive_number(length, "token length")
     return secrets.token_hex(length)
 
 def hmac_sign(message: str, key: str) -> str:
@@ -59,8 +56,8 @@ def hmac_sign(message: str, key: str) -> str:
     :param key: The key to use for HMAC.
     :return: The generated HMAC signature.
     """
-    __validate_string_input(message, "message")
-    __validate_string_input(key, "key")
+    __validate_string_input(message, "message", is_allow_empty=False)
+    __validate_string_input(key, "key", is_allow_empty=False)
     hmac_obj = hmac.new(key.encode(), message.encode(), hashlib.sha256)
     return hmac_obj.hexdigest()
 
@@ -73,9 +70,9 @@ def verify_hmac(message: str, key: str, signature: str) -> bool:
     :param signature: The signature to verify.
     :return: True if the signature matches, False otherwise.
     """
-    __validate_string_input(message, "message")
-    __validate_string_input(key, "key")
-    __validate_string_input(signature, "signature")
+    __validate_string_input(message, "message", is_allow_empty=False)
+    __validate_string_input(key, "key", is_allow_empty=False)
+    __validate_string_input(signature, "signature", is_allow_empty=False)
     expected_signature = hmac_sign(message, key)
     return hmac.compare_digest(expected_signature, signature)
 
@@ -86,7 +83,7 @@ def hash_data(data: str) -> str:
     :param data: The data to hash.
     :return: The hashed data.
     """
-    __validate_string_input(data, "data")
+    __validate_string_input(data, "data", is_allow_empty=False)
     return hashlib.sha256(data.encode()).hexdigest()
 
 # Example usage

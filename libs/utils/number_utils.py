@@ -1,10 +1,7 @@
 import math
 
-from global_utils import global_init
-global_init()
-
-from exceptions.custom_exceptions import InvalidInputError
-from utils.__validate import __validate_integer_input, __validate_positive_number, __validate_non_zero
+from libs.exceptions.custom_exceptions import InvalidInputError
+from libs.utils.__validate import __validate_integer_input, __validate_positive_number, __validate_non_zero
 
 def validate_two_numbers(a, b):
     if not isinstance(a, int) or not isinstance(b, int):
@@ -90,18 +87,7 @@ def sum_of_digits(number: int) -> int:
     __validate_integer_input(number, 'number')
     return sum(int(digit) for digit in str(abs(number)))
 
-def round_to_nearest(value: float, nearest: float = 1.0) -> float:
-    """
-    Round the given value to the nearest specified number.
-    
-    :param value: The value to round.
-    :param nearest: The number to round to the nearest of (default: 1.0).
-    :return: The rounded value.
-    """
-    if not isinstance(value, (int, float)) or not isinstance(nearest, (int, float)):
-        raise InvalidInputError(f"value and nearest must be numbers. Received: value={value}, nearest={nearest}")
-    __validate_non_zero(nearest,'nearest')
-    return round(value / nearest) * nearest
+
 
 # Example usage
 if __name__ == "__main__":
@@ -112,4 +98,3 @@ if __name__ == "__main__":
     print(f"Is 4 an even number?: {is_even(4)}")
     print(f"Is 7 an odd number?: {is_odd(7)}")
     print(f"Sum of digits of 1234: {sum_of_digits(1234)}")
-    print(f"Round 12.7 to the nearest multiple of 5: {round_to_nearest(12.7, 5)}")

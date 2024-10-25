@@ -1,9 +1,6 @@
 from datetime import datetime, date
 
-from global_utils import global_init
-global_init()
-
-from exceptions.custom_exceptions import InvalidInputError
+from libs.exceptions.custom_exceptions import InvalidInputError
 
 
 # Validate that the input is a date object
@@ -22,9 +19,11 @@ def __validate_integer_input(input_value, field_name=''):
         raise InvalidInputError(field_name, f"The input must be an integer. Received[{field_name}: {input_value}]")
 
 
-def __validate_string_input(input_value, field_name=''):
+def __validate_string_input(input_value, field_name='', is_allow_empty=True):
     if not isinstance(input_value, str):
         raise InvalidInputError(field_name, f"The input must be a string. Received[{field_name}: {input_value}]")
+    if not is_allow_empty and input_value == '':
+        raise InvalidInputError(field_name, "Empty strings are not allowed.")
     
 def __validate_positive_number(input_value, field_name=''):
     __validate_integer_input(input_value= input_value, field_name= field_name)

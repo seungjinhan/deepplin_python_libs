@@ -2,10 +2,7 @@ import requests
 from typing import Optional, Dict, Any
 import logging
 
-from global_utils import global_init
-global_init()
-
-from exceptions.custom_exceptions import APIRequestError, InvalidInputError, AuthenticationError
+from libs.exceptions.custom_exceptions import APIRequestError, InvalidInputError, AuthenticationError
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

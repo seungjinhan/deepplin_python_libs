@@ -2,11 +2,8 @@ import socket
 import ssl
 from urllib.parse import urlparse
 
-from global_utils import global_init
-global_init()
-
-from exceptions.custom_exceptions import InvalidInputError
-from __common import __validate_string_input
+from libs.exceptions.custom_exceptions import InvalidInputError
+from libs.utils.__validate import __validate_string_input
 
 def get_ip_address(hostname: str) -> str:
     """
@@ -15,7 +12,7 @@ def get_ip_address(hostname: str) -> str:
     :param hostname: The hostname to look up the IP address for.
     :return: The IP address corresponding to the hostname.
     """
-    __validate_string_input(hostname, "hostname")
+    __validate_string_input(hostname, "hostname", is_allow_empty=False)
     try:
         ip_address = socket.gethostbyname(hostname)
         return ip_address
@@ -31,13 +28,20 @@ def check_port_open(hostname: str, port: int, timeout: int = 5) -> bool:
     :param timeout: Connection attempt timeout in seconds.
     :return: True if the port is open, False otherwise.
     """
-    __validate_string_input(hostname, "hostname")
+    __validate_string_input(hostname, "hostname", is_allow_empty=False)
     if not isinstance(port, int) or not (1 <= port <= 65535):
         raise ValueError(f"Port number must be an integer between 1 and 65535. Received: {port}")
     try:
+        try:
+            # Validate hostname
+            socket.gethostbyname(hostname)
+        except socket.gaierror:
+            raise ValueError(f"Invalid hostname: {hostname}")
+        
         with socket.create_connection((hostname, port), timeout=timeout):
             return True
     except (socket.timeout, socket.error):
+        print(f"Port {port} is closed on {hostname}.{socket.error}")
         return False
 
 def get_ssl_certificate_info(hostname: str, port: int = 443) -> dict:
@@ -48,7 +52,7 @@ def get_ssl_certificate_info(hostname: str, port: int = 443) -> dict:
     :param port: The HTTPS port (default: 443).
     :return: A dictionary containing the SSL certificate information.
     """
-    __validate_string_input(hostname, "hostname")
+    __validate_string_input(hostname, "hostname", is_allow_empty=False)
     if not isinstance(port, int) or not (1 <= port <= 65535):
         raise ValueError(f"Port number must be an integer between 1 and 65535. Received: {port}")
     context = ssl.create_default_context()
@@ -67,7 +71,7 @@ def is_valid_url(url: str) -> bool:
     :param url: The URL string to check.
     :return: True if the URL is valid, False otherwise.
     """
-    __validate_string_input(url, "URL")
+    __validate_string_input(url, "URL", is_allow_empty=False)
     parsed = urlparse(url)
     return all([parsed.scheme, parsed.netloc])
 
